@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "preload": "tsc -p tsconfig.json",
+    "test:load": "npm run preload && artillery run scenarios/auth-load.yml --config artillery.config.js -o reports/auth-load.json && artillery report -o reports/auth-load.html reports/auth-load.json"
   },
   "keywords": [],
   "author": "",

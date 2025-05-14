@@ -1,0 +1,1 @@
+Carpeta recomendada por Playwright para almacenar el estado de sesión (cookies + localStorage).

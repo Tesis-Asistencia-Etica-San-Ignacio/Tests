@@ -1,0 +1,22 @@
+config:
+  target: '${BACKEND_URL}'
+  phases:
+    - name: 'Login Spike'
+      duration: 60 # en segundos
+      arrivalRate: 30 # aprox 30 concurrentes
+  processor: '../hooks/authHook.js'
+  defaults:
+    headers:
+      Content-Type: 'application/json'
+      Cookie: '{{ cookies }}'
+scenarios:
+  - name: 'Login Load Test'
+    flow:
+      - post:
+          url: '/auth/login'
+          json:
+            email: '${ADMIN_EMAIL}'
+            password: '${ADMIN_PASSWORD}'
+      - think: 5 # espera 5s entre pasos
+      - get:
+          url: '/auth/me'

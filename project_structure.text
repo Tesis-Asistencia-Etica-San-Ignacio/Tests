@@ -1,11 +1,41 @@
+- .env
+- .gitignore
 - e2e
+  - .auth
+    - README
+  - global-setup.ts
   - package-lock.json
   - package.json
+  - playwright.config.ts
+  - screenshots
+  - specs
+  - tsconfig.json
 - integration
   - jest.config.js
   - package-lock.json
   - package.json
+  - specs
+    - auth
+    - case
+    - fixtures
+      - semillas BD, mocks
   - tsconfig.json
 - load
+  - artillery.config.js
+  - hooks
+    - authHook.ts
   - package-lock.json
   - package.json
+  - reports
+  - scenarios
+  - tsconfig.json
+- package-lock.json
+- package.json
+- project_structure.text
+- README.md
+- shared
+  - fixtures
+    - datos JSON reutilizables
+  - helpers
+    - auth.ts
+- tsconfig.base.json

@@ -1,0 +1,91 @@
+# Dependencias
+node_modules/
+bun.lockb
+.pnp/
+.pnp.js
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+bun-debug.log*
+
+# Directorios de compilación y salida
+dist/
+build/
+.out/
+.next/
+.cache/
+.vite/
+.vercel/
+.netlify/
+
+# Configuración del entorno
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+.env.*.local
+
+# Archivos de procesos del sistema
+.DS_Store
+Thumbs.db
+
+# Archivos de editor y herramientas de desarrollo
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Caché de paquetes y dependencias
+.npm/
+.yarn/
+.pnp.*
+.bun/
+.parcel-cache/
+
+# Salida de testing y cobertura
+coverage/
+*.lcov
+jest-cache/
+jest-output/
+
+# Archivos de configuración y compilación
+.babelrc
+.eslintcache
+.prettier/
+.prettierignore
+.stylelintcache
+tsconfig.tsbuildinfo
+
+# Docker
+docker-compose.override.yml
+.dockerignore
+
+# Otros
+*.tgz
+*.zip
+*.tar.gz
+*.bak
+*.log.*
+
+# Archivos específicos para frontend
+public/
+.next/
+.nuxt/
+.svelte-kit/
+.storybook/
+.idea/
+
+# Archivos de build para frameworks modernos
+/.expo/
+.webpack/
+.esbuild/
+.tailwind-cache/
+
+# Archivos de lock específicos de frontend
+yarn.lock
+pnpm-lock.yaml

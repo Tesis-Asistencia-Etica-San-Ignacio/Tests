@@ -3,15 +3,14 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {
-    "preload": "tsc -p tsconfig.json",
-    "test:load": "npm run preload && artillery run scenarios/auth-load.yml --config artillery.config.js -o reports/auth-load.json && artillery report -o reports/auth-load.html reports/auth-load.json"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "type": "commonjs",
+  "scripts": {
+    "build:hooks": "tsc -p tsconfig.json",
+    "test:load": "npm run build:hooks && artillery run scenarios/auth-load.yml -o reports/auth-load.json && npx artillery report reports/auth-load.json reports/auth-load.html"
+  },
   "devDependencies": {
-    "artillery": "^2.0.21"
+    "artillery": "^2.0.23",
+    "typescript": "^5.x",
+    "@types/node": "^20.x"
   }
 }

@@ -2,7 +2,7 @@
 - .gitignore
 - e2e
   - .auth
-    - README
+    - README.md
   - global-setup.ts
   - package-lock.json
   - package.json
@@ -14,25 +14,41 @@
   - jest.config.js
   - package-lock.json
   - package.json
+  - README.md
   - specs
     - auth
+      - login.spec.ts
+      - refresh.spec.ts
+      - session.spec.ts
     - case
     - fixtures
       - semillas BD, mocks
   - tsconfig.json
 - load
-  - artillery.config.js
+  - artillery.config.yml
+  - dist
+    - hooks
+      - authHook.js
+    - load
+      - hooks
+        - authHook.js
+    - shared
+      - helpers
+        - auth.js
   - hooks
     - authHook.ts
   - package-lock.json
   - package.json
+  - README.md
   - reports
   - scenarios
+    - auth-load.yml
   - tsconfig.json
 - package-lock.json
 - package.json
 - project_structure.text
 - README.md
+- settings.json
 - shared
   - fixtures
     - datos JSON reutilizables

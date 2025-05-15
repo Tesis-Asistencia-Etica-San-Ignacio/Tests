@@ -1,14 +1,15 @@
 config:
-  target: '${BACKEND_URL}'
-  phases:
-    - name: 'Login Spike'
-      duration: 60 # en segundos
-      arrivalRate: 30 # aprox 30 concurrentes
-  processor: '../hooks/authHook.js'
+  target: '${BACKEND_URL}${CONVENTION_API}'
+  processor: '../dist/hooks/authHook.js'
   defaults:
     headers:
       Content-Type: 'application/json'
       Cookie: '{{ cookies }}'
+  phases:
+    - name: 'Login Spike'
+      duration: 60
+      arrivalRate: 30
+
 scenarios:
   - name: 'Login Load Test'
     flow:
@@ -17,6 +18,6 @@ scenarios:
           json:
             email: '${ADMIN_EMAIL}'
             password: '${ADMIN_PASSWORD}'
-      - think: 5 # espera 5s entre pasos
+      - think: 2
       - get:
           url: '/auth/me'

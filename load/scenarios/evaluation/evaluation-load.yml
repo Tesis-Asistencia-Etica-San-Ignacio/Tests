@@ -1,0 +1,53 @@
+config:
+  target: 'http://localhost:8080/api'
+  http:
+    cookieJar: true
+  plugins:
+    metrics-by-endpoint:
+      useOnlyRequestNames: true
+  phases:
+    - duration: 10s
+      arrivalCount: 100
+
+scenarios:
+  - name: flujo-con-metrics
+    flow:
+      # 1) LOGIN
+      - post:
+          name: 'Login'
+          url: '/auth/login'
+          json:
+            email: 'admin-husi@gmail.com'
+            password: 'Password123*'
+
+      # 2) UPLOAD PDF
+      - post:
+          name: 'Upload PDF'
+          url: '/files/upload'
+          formData:
+            file:
+              fromFile: 'document.pdf'
+              contentType: application/pdf
+          capture:
+            - json: '$.evaluacion.id'
+              as: 'eid'
+
+      # 3) BREVE PAUSA
+      - think: 1
+
+      # 4) LISTAR EVALUACIONES
+      - get:
+          name: 'Listar Evaluaciones'
+          url: '/evaluacion/my'
+
+      # 5) ACTUALIZAR CORREO
+      - patch:
+          name: 'Actualizar Correo'
+          url: '/evaluacion/{{ eid }}'
+          json:
+            correo_estudiante: 'test+{{ $randomString(5) }}@mail.com'
+
+      # 6) ELIMINAR EVALUACIÓN
+      - delete:
+          name: 'Eliminar Evaluación'
+          url: '/evaluacion/{{ eid }}'

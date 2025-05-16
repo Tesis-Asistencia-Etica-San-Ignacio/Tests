@@ -25,24 +25,15 @@
       - semillas BD, mocks
   - tsconfig.json
 - load
-  - artillery.config.yml
-  - dist
-    - hooks
-      - authHook.js
-    - load
-      - hooks
-        - authHook.js
-    - shared
-      - helpers
-        - auth.js
-  - hooks
-    - authHook.ts
+  - hook
+    - authHook.js
   - package-lock.json
   - package.json
   - README.md
   - reports
   - scenarios
     - auth-load.yml
+    - stats-load.yml
   - tsconfig.json
 - package-lock.json
 - package.json

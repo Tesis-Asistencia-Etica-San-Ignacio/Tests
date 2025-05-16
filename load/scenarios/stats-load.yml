@@ -10,7 +10,7 @@ config:
       arrivalCount: 100 # 100 VUs en total, distribuidos uniformemente en 10 s
 
 scenarios:
-  - name: login
+  - name: stats
     flow:
       - post:
           name: 'Login'
@@ -18,3 +18,9 @@ scenarios:
           json:
             email: 'admin-husi@gmail.com'
             password: 'Password123*'
+      - get:
+          name: 'Obtener estadísticas'
+          url: '/stats/evaluations'
+          qs:
+            from: '2025-04-15'
+            to: '2025-05-15'

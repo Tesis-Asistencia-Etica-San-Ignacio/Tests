@@ -1,16 +1,18 @@
 {
   "name": "load",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "private": true,
   "type": "commonjs",
   "scripts": {
-    "build:hooks": "tsc -p tsconfig.json",
-    "test:load": "npm run build:hooks && artillery run scenarios/auth-load.yml -o reports/auth-load.json && npx artillery report reports/auth-load.json reports/auth-load.html"
+    "test:load": "artillery run scenarios/auth-load.yml --output reports/auth-load.json --plugins artillery-plugin-html-report"
   },
   "devDependencies": {
     "artillery": "^2.0.23",
-    "typescript": "^5.x",
-    "@types/node": "^20.x"
+    "artillery-plugin-html-report": "^2.0.0",
+    "artillery-plugin-metrics-by-endpoint": "^1.17.0",
+    "form-data": "^4.0.2"
+  },
+  "dependencies": {
+    "dotenv-cli": "^8.0.0"
   }
 }

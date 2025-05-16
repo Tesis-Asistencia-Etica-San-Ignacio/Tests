@@ -1,0 +1,79 @@
+config:
+  target: 'http://localhost:8080/api'
+  http:
+    cookieJar: true
+  plugins:
+    metrics-by-endpoint:
+      useOnlyRequestNames: true # agrupa por el campo "name" de cada request
+  phases:
+    - duration: 10s # 100 VUs distribuidos en 10 s
+      arrivalCount: 100
+
+scenarios:
+  - name: flujo-perfil-completo
+    flow:
+      # 0) DEFINIR VARIABLES ALEATORIAS ─ se evalúan UNA sola vez por VU
+      - set:
+          email: 'user{{ $randomString(6) }}@mail.com'
+          password: 'Pass{{ $randomString(6) }}'
+          newPassword: 'New{{ $randomString(8) }}'
+          name: 'Pancho'
+          lastname: 'Rodriguez'
+
+      # 1) CREAR USUARIO
+      - post:
+          name: 'Create User'
+          url: '/user/investigador'
+          json:
+            name: '{{ name }}'
+            last_name: '{{ lastname }}'
+            email: '{{ email }}'
+            password: '{{ password }}'
+          capture:
+            - json: '$.id' # lo guardamos por si lo necesitáramos después
+              as: 'uid'
+
+      # 2) LOGIN (contraseña original)
+      - post:
+          name: 'Login original'
+          url: '/auth/login'
+          json:
+            email: '{{ email }}'
+            password: '{{ password }}'
+
+      - think: 0.5 # pequeña pausa
+
+      # 3) ACTUALIZAR PERFIL
+      - patch:
+          name: 'Update Profile'
+          url: '/user/'
+          json:
+            name: '{{ name }}'
+            last_name: '{{ lastname }}'
+
+      - think: 0.5
+
+      # 4) CAMBIAR CONTRASEÑA
+      - post:
+          name: 'Update Password'
+          url: '/user/update-password'
+          json:
+            password: '{{ password }}'
+            newPassword: '{{ newPassword }}'
+
+      - think: 0.5
+
+      # 5) LOGIN con la NUEVA contraseña
+      - post:
+          name: 'Login nuevo'
+          url: '/auth/login'
+          json:
+            email: '{{ email }}'
+            password: '{{ newPassword }}'
+
+      - think: 0.5
+
+      # 6) ELIMINAR USUARIO
+      - delete:
+          name: 'Delete User'
+          url: '/user/'

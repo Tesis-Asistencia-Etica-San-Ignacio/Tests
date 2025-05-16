@@ -1,28 +1,17 @@
-import { chromium, FullConfig } from '@playwright/test';
-import { login } from '../shared/helpers/auth';
-import { mkdirSync, writeFileSync } from 'fs';
+import { chromium } from '@playwright/test';
+import { writeFile } from 'fs/promises';
 
-async function globalSetup(_: FullConfig) {
-    const { cookies } = await login();
-    const storageState = {
-        cookies: cookies.split('; ').map(raw => {
-            const [name, value] = raw.split('=');
-            return {
-                name,
-                value,
-                domain: 'localhost',
-                path: '/',
-                httpOnly: true,
-                secure: false,
-                sameSite: 'Lax',
-                expires: -1
-            };
-        }),
-        origins: []
-    };
+const authFile = 'storageState.json';
 
+export default async () => {
+    const browser = await chromium.launch();
+    const page = await browser.newPage();
+    await page.goto(`${process.env.FRONTEND_URL}/login`);
 
-    mkdirSync('.auth', { recursive: true });
-    writeFileSync('.auth/adminState.json', JSON.stringify(storageState, null, 2));
-}
-export default globalSetup;
+    await page.fill('input[name=email]', process.env.ADMIN_EMAIL!);
+    await page.fill('input[name=password]', process.env.ADMIN_PASSWORD!);
+    await page.click('button[type=submit]');
+    await page.context().storageState({ path: authFile });
+
+    await browser.close();
+};

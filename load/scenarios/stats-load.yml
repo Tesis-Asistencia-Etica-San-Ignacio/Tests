@@ -7,7 +7,7 @@ config:
       useOnlyRequestNames: true
   phases:
     - duration: 10s # Duración total de la prueba
-      arrivalCount: 100 # 100 VUs en total, distribuidos uniformemente en 10 s
+      arrivalCount: 50 # 50 VUs en total, distribuidos uniformemente en 10 s
 
 scenarios:
   - name: stats

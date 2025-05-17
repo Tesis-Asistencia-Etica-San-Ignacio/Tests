@@ -7,7 +7,7 @@ config:
       useOnlyRequestNames: true
   phases:
     - duration: 10s
-      arrivalCount: 100
+      arrivalCount: 50
 
 scenarios:
   - name: flujo-con-metrics

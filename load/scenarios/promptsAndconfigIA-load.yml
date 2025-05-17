@@ -1,0 +1,48 @@
+config:
+  target: 'http://localhost:8080/api'
+  http:
+    cookieJar: true
+  plugins:
+    metrics-by-endpoint:
+      useOnlyRequestNames: true
+  phases:
+    - duration: 10s # 50 VUs en 10 s (ajusta a tu gusto)
+      arrivalCount: 50
+
+scenarios:
+  - name: flujo-ia-prompts
+    flow:
+      # 1) LOGIN (evaluador / admin ya existente)
+      - post:
+          name: 'Login'
+          url: '/auth/login'
+          json:
+            email: 'admin-husi@gmail.com'
+            password: 'Password123*'
+
+      # 2) GETS EN PARALELO ─ lista de prompts & modelos IA
+      - parallel:
+          - get:
+              name: 'Get My Prompts'
+              url: '/prompts/my'
+              capture:
+                - json: '$[0].id' # id del primer prompt
+                  as: 'promptId'
+          - get:
+              name: 'Get IA Models'
+              url: '/ia/models'
+
+      # 3) ACTUALIZA EL TEXTO DEL PROMPT CAPTURADO
+      - patch:
+          name: 'Update Prompt Text'
+          url: '/prompts/{{ promptId }}'
+          json:
+            texto: 'Texto actualizado {{ $randomString(10) }}'
+
+      # 4) GUARDA / ACTUALIZA LA API-KEY DEL PROVEEDOR IA
+      - post:
+          name: 'Save IA API-Key'
+          url: '/ia/config/apikey'
+          json:
+            provider: 'gemini'
+            apiKey: 'key-{{ $randomString(12) }}'

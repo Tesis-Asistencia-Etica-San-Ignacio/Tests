@@ -4,72 +4,64 @@ config:
     cookieJar: true
   plugins:
     metrics-by-endpoint:
-      useOnlyRequestNames: true # agrupa por el campo "name" de cada request
+      useOnlyRequestNames: true
   phases:
-    - duration: 10s # 100 VUs distribuidos en 10 s
-      arrivalCount: 100
+    - duration: 10s
+      arrivalCount: 50 # 50 VUs en 10 s
 
 scenarios:
   - name: flujo-perfil-completo
     flow:
-      # 0) DEFINIR VARIABLES ALEATORIAS ─ se evalúan UNA sola vez por VU
-      - set:
-          email: 'user{{ $randomString(6) }}@mail.com'
-          password: 'Pass{{ $randomString(6) }}'
-          newPassword: 'New{{ $randomString(8) }}'
-          name: 'Pancho'
-          lastname: 'Rodriguez'
-
-      # 1) CREAR USUARIO
+      # 1) CREAR USUARIO  ─ email aleatorio, pass fija
       - post:
           name: 'Create User'
           url: '/user/investigador'
           json:
-            name: '{{ name }}'
-            last_name: '{{ lastname }}'
-            email: '{{ email }}'
-            password: '{{ password }}'
+            name: 'Pancho'
+            last_name: 'Rodriguez'
+            email: 'user{{ $randomString(8) }}@mail.com'
+            password: 'Password123*'
           capture:
-            - json: '$.id' # lo guardamos por si lo necesitáramos después
-              as: 'uid'
+            - json: '$.email' # ← guardamos el email devuelto
+              as: 'email'
 
-      # 2) LOGIN (contraseña original)
+      # 2) LOGIN con la contraseña original
       - post:
           name: 'Login original'
           url: '/auth/login'
           json:
             email: '{{ email }}'
-            password: '{{ password }}'
+            password: 'Password123*'
 
-      - think: 0.5 # pequeña pausa
+      - think: 1 # pequeña pausa
 
-      # 3) ACTUALIZAR PERFIL
+      # 3) ACTUALIZAR PERFIL (solo nombre y apellido)
       - patch:
           name: 'Update Profile'
           url: '/user/'
           json:
-            name: '{{ name }}'
-            last_name: '{{ lastname }}'
+            name: 'Pancho'
+            last_name: 'Rodriguez'
 
       - think: 0.5
 
-      # 4) CAMBIAR CONTRASEÑA
+      # 4) CAMBIAR CONTRASEÑA  ─ nueva fija para todos los VUs
       - post:
           name: 'Update Password'
           url: '/user/update-password'
           json:
-            password: '{{ password }}'
-            newPassword: '{{ newPassword }}'
+            password: 'Password123*'
+            newPassword: 'NewPassword123*'
 
       - think: 0.5
 
-      # 5) LOGIN con la NUEVA contraseña
+      # 5) LOGIN con la nueva contraseña
       - post:
           name: 'Login nuevo'
           url: '/auth/login'
           json:
             email: '{{ email }}'
-            password: '{{ newPassword }}'
+            password: 'NewPassword123*'
 
       - think: 0.5
 

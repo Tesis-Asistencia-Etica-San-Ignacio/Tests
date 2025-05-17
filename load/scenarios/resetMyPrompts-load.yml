@@ -1,0 +1,29 @@
+config:
+  target: 'http://localhost:8080/api'
+  http:
+    cookieJar: true
+  plugins:
+    metrics-by-endpoint:
+      useOnlyRequestNames: true
+  phases:
+    - duration: 10s # 50 VUs repartidos en 10 s
+      arrivalCount: 50
+
+scenarios:
+  - name: flujo-reset-prompts
+    flow:
+      # 1) LOGIN (evaluador/admin)
+      - post:
+          name: 'Login'
+          url: '/auth/login'
+          json:
+            email: 'admin-husi@gmail.com'
+            password: 'Password123*'
+
+      # (opcional) breve pausa si quieres separar las peticiones
+      - think: 0.3
+
+      # 2) RESET DE PROMPTS
+      - post:
+          name: 'Reset My Prompts'
+          url: '/prompts/my/reset-prompts'

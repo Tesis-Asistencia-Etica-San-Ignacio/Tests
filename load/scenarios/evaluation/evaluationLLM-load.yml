@@ -1,0 +1,84 @@
+config:
+  target: 'http://localhost:8080/api'
+  http:
+    cookieJar: true
+    timeout: 120000
+  plugins:
+    metrics-by-endpoint:
+      useOnlyRequestNames: true # agrupa por el campo name
+  phases:
+    # 15 usuarios en 60 s  ⇒  15 evals/min  ⇒  ≤ 15 llamadas a /ia/evaluate
+    - duration: 60
+      arrivalCount: 15
+
+scenarios:
+  - name: flujo-evaluacion-llm
+    flow:
+      # 1) LOGIN
+      - post:
+          name: 'Login'
+          url: '/auth/login'
+          json:
+            email: 'admin-husi@gmail.com'
+            password: 'Password123*'
+
+      # 2) SUBIR PDF DE LA EVALUACIÓN
+      - post:
+          name: 'Upload PDF'
+          url: '/files/upload'
+          formData:
+            file:
+              fromFile: 'document.pdf'
+              contentType: application/pdf
+          capture:
+            - json: '$.evaluacion.id'
+              as: 'evaluationId'
+
+      # 3) ENVIAR A LLM (Gemini 2 Flash)
+      - post:
+          name: 'Evaluate with LLM'
+          url: '/ia/evaluate'
+          json:
+            evaluationId: '{{ evaluationId }}'
+
+      # 4) ESPERAR ≈ 20 s A QUE TERMINE
+      - think: 20 # ajusta si tu LLM tarda más/menos
+
+      # 5) OBTENER NORMAS ÉTICAS DE ESA EVALUACIÓN
+      - get:
+          name: 'Get Ethical Norms'
+          url: '/ethicalRules/evaluation/{{ evaluationId }}'
+          capture:
+            - json: '$[0].id' # primera norma devuelta
+              as: 'normId'
+
+      # 6) ACTUALIZAR JUSTIFICACIÓN DE ESA NORMA
+      - patch:
+          name: 'Update Ethical Norm'
+          url: '/ethicalRules/{{ normId }}'
+          json:
+            status: 'NO_APROBADO'
+            justification: 'esto es una prueba'
+
+      # 7) GENERAR PDF CON EL RESULTADO
+      - post:
+          name: 'Generate PDF'
+          url: '/pdf/preview-evaluator'
+          json:
+            evaluationId: '{{ evaluationId }}'
+
+      # 8) ESPERAR 20 s A QUE EL PDF SE GUARDE
+      - think: 10
+
+      # 9) ENVIAR CORREO AL INVESTIGADOR
+      - post:
+          name: 'Send Email'
+          url: '/smtp/send-email'
+          json:
+            to: 'jmanuelrardilla@gmail.com'
+            infoMail:
+              subject: 'esto es una prueba'
+              mensajeAdicional: 'esto es una prueba'
+            evaluationId: '{{ evaluationId }}'
+            modelo: 'X'
+      - think: 10

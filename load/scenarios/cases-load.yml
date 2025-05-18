@@ -1,0 +1,92 @@
+config:
+  target: 'http://localhost:8080/api'
+  http:
+    cookieJar: true
+    timeout: 120000 # un poco más alto
+  plugins:
+    metrics-by-endpoint:
+      useOnlyRequestNames: true
+  phases:
+    - duration: 120
+      arrivalCount: 50 # prueba; luego subes a 25-50
+
+scenarios:
+  - name: flujo-investigador
+    flow:
+      # 1) Crear usuario
+      - post:
+          name: 'Create Investigator'
+          url: '/user/investigador'
+          json:
+            name: 'Pancho'
+            last_name: 'Rodriguez'
+            email: 'inv{{ $randomString(6) }}@mail.com'
+            password: 'Password123*'
+          capture:
+            - json: '$.email'
+              as: 'correo'
+
+      # 2) Login
+      - post:
+          name: 'Login'
+          url: '/auth/login'
+          json:
+            email: '{{ correo }}'
+            password: 'Password123*'
+
+      # 3) Preview PDF  → capturar X-Pdf-Id
+      - post:
+          name: 'Preview PDF'
+          url: '/pdf/preview-investigator'
+          json:
+            codigo: 'GIC-XYZ-{{ $randomString(4) }}'
+            version: 3
+            fecha: '2024-11-15'
+            nombre_proyecto: 'Ensayo Clínico Fase III'
+            clasifiacion_riesgo: 'riesgo_mayor'
+            tipo_poblacion: 'menores'
+            tipo_estudio: 'intervencion_muestras'
+            genero_doctor: 'Femenino'
+          capture:
+            - header: 'x-pdf-id'
+              as: 'pdfId'
+
+      - think: 2 # deja respirar al generador
+
+      # 4) Crear caso (cabecera X-Pdf-Id)
+      - post:
+          name: 'Create Case'
+          url: '/cases'
+          headers:
+            X-Pdf-Id: '{{ pdfId }}'
+          json:
+            codigo: 'GIC-XYZ'
+            version: 3
+            fecha: '2024-11-15'
+            nombre_proyecto: 'Ensayo Clínico Fase III'
+
+      - think: 3
+
+      # 5) Listar casos → capturar id y filename
+      - get:
+          name: 'Get My Cases'
+          url: '/cases/my'
+          capture:
+            - json: '$[0].id'
+              as: 'caseId'
+            - json: '$[0].pdf'
+              as: 'pdfUrl'
+
+      # extrae sólo el nombre de archivo
+      - set:
+          caseFile: '{{ pdfUrl.split("/").pop() }}'
+
+      # 6) Descargar PDF vía proxy interno
+      - get:
+          name: 'Download Case PDF'
+          url: '/files/pdf/{{ caseFile }}'
+
+      # 7) Eliminar caso
+      - delete:
+          name: 'Delete Case'
+          url: '/cases/{{ caseId }}'

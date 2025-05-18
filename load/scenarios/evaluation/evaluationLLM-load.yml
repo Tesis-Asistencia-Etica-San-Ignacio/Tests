@@ -62,18 +62,22 @@ scenarios:
 
       # 7) GENERAR PDF CON EL RESULTADO
       - post:
-          name: 'Generate PDF'
+          name: 'Preview PDF'
           url: '/pdf/preview-evaluator'
           json:
             evaluationId: '{{ evaluationId }}'
+          capture:
+            - header: 'x-pdf-id' # se almacena en {{ pdfId }}
+              as: 'pdfId'
 
-      # 8) ESPERAR 20 s A QUE EL PDF SE GUARDE
-      - think: 10
+      - think: 10 # pausa opcional (PDF ya cacheado)
 
-      # 9) ENVIAR CORREO AL INVESTIGADOR
+      # 8) ENVIAR CORREO con el header X-Pdf-Id
       - post:
           name: 'Send Email'
           url: '/smtp/send-email'
+          headers:
+            X-Pdf-Id: '{{ pdfId }}' # ← aquí va la cabecera
           json:
             to: 'jmanuelrardilla@gmail.com'
             infoMail:
@@ -81,4 +85,3 @@ scenarios:
               mensajeAdicional: 'esto es una prueba'
             evaluationId: '{{ evaluationId }}'
             modelo: 'X'
-      - think: 10

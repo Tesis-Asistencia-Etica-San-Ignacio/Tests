@@ -3,6 +3,7 @@
   "compilerOptions": {
     "rootDir": "../..",
     "outDir": "dist",
+    "typeRoots": ["node_modules/@types"],
     "types": [
       "jest",
       "node"
@@ -12,5 +13,5 @@
     "./**/*.ts",
     "../shared/**/*.ts",
     "../../Backend/src/**/*.ts"
-  ]
+, "jest.config.js"  ]
 }

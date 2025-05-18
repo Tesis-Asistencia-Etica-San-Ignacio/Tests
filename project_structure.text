@@ -7,10 +7,9 @@
   - package-lock.json
   - package.json
   - playwright.config.ts
-  - screenshots
-  - specs
   - tsconfig.json
 - integration
+  - .env.test
   - jest.config.js
   - package-lock.json
   - package.json
@@ -20,20 +19,24 @@
       - login.spec.ts
       - refresh.spec.ts
       - session.spec.ts
-    - case
     - fixtures
       - semillas BD, mocks
+    - setup-env.ts
   - tsconfig.json
 - load
-  - hook
-    - authHook.js
   - package-lock.json
   - package.json
   - README.md
-  - reports
   - scenarios
     - auth-load.yml
+    - evaluation
+      - document.pdf
+      - evaluation-load.yml
+      - evaluationLLM-load.yml
+    - promptsAndconfigIA-load.yml
+    - resetMyPrompts-load.yml
     - stats-load.yml
+    - user-load.yml
   - tsconfig.json
 - package-lock.json
 - package.json

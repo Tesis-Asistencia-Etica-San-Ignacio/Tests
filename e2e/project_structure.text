@@ -1,0 +1,50 @@
+- package-lock.json
+- package.json
+- playwright-report
+  - data
+    - 4aa1ce2559ed55335814438fad9caf297ee2b6ec.png
+    - 545ffa77c2f445d1f142059364d90458e705b69d.zip
+    - 59ea5e58ee3296de424707bc55754ac5ce148c4c.zip
+    - b78ae417611db06d8dd835208c39c11e17d7cd92.zip
+    - ed753ae362aa55484b767823e917cd146cefc936.md
+  - index.html
+  - trace
+    - assets
+      - codeMirrorModule-DwAiTpyC.js
+      - defaultSettingsView-DkkRvn5X.js
+    - codeMirrorModule.C3UTv-Ge.css
+    - codicon.DCmgc-ay.ttf
+    - defaultSettingsView.QdHITyLI.css
+    - index.CFOW-Ezb.css
+    - index.DvtSwn6E.js
+    - index.html
+    - playwright-logo.svg
+    - snapshot.html
+    - sw.bundle.js
+    - uiMode.BatfzHMG.css
+    - uiMode.html
+    - uiMode.Sdytl9wc.js
+    - xtermModule.Beg8tuEN.css
+- playwright.config.ts
+- project_structure.text
+- README.md
+- screenshots
+- test-results
+  - .last-run.json
+  - evaluator-test-chromium
+    - test-failed-1.png
+    - trace.zip
+  - evaluator-test-firefox
+    - error-context.md
+    - trace.zip
+  - evaluator-test-webkit
+    - trace.zip
+- tests
+  - auth
+    - fixtures
+      - IFC 489 INICIAL.pdf
+    - login.spec.ts
+    - registry.spec.ts
+  - evaluator.spec.ts
+  - investigator.spec.ts
+- tsconfig.json

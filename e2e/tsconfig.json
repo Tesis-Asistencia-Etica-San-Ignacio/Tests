@@ -4,11 +4,10 @@
         "rootDir": "..",
         "types": [
             "@playwright/test",
-            "node" 
+            "node"
         ]
     },
     "include": [
-        "./**/*.ts",
-        "../shared/**/*.ts" 
+        "./**/*.ts"
     ]
 }

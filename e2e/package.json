@@ -4,15 +4,21 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test:e2e": "playwright test",
+    "test:e2e:headed": "playwright test --headed",
+    "mcp:start": "npx @playwright/mcp@latest"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
+    "@playwright/mcp": "^0.0.26",
     "@playwright/test": "^1.52.0",
     "@types/node": "^22.15.17",
-    "supertest": "^7.1.1"
+    "@types/uuid": "^10.0.0"
+  },
+  "dependencies": {
+    "uuid": "^11.1.0"
   }
 }

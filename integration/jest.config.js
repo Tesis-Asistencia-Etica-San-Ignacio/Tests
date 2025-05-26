@@ -1,4 +1,3 @@
-// jest.config.js (dentro de integration/)
 const path = require('path');
 
 module.exports = {
